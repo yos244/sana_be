@@ -38,7 +38,6 @@ app.get("/api/store_db/cards", (request, response) => {
             response.status(500).send({ message: "Error fetching data" });
         } else {
             response.send(result);
-            console.log(result);
         }
     });
 });
@@ -49,6 +48,8 @@ app.post("/api/store_db/cards", (request, response) => {
         return response.status(500).send("Database not initialized");
     }
     // Create a new card object from the request body
+    console.log(request.body)
+
     const newCard = {
         itemName: request.body.itemName,
         price: request.body.price,
