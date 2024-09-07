@@ -12,6 +12,8 @@ var CONNECTION_STRING = "mongodb+srv://yostul93:AYft889NcuEK06Qm@cluster0.gn68m.
 var DATABASENAME = "store_db";
 var database; 
 
+let imgPath = ""
+
 // Connecting to the database
 MongoClient.connect(CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
     if (error) {
@@ -47,22 +49,21 @@ app.post("/api/store_db/cards", (request, response) => {
     if (!database) {
         return response.status(500).send("Database not initialized");
     }
-    // Create a new card object from the request body
-    console.log(request.body)
-
+    
     const newCard = {
-        itemName: request.body.itemName,
+        title: request.body.title,
+        description: request.body.description,
         price: request.body.price,
-        imageUrl: request.body.imageUrl
+        img_url: request.body.img_url,
     };
-
+    
     // Insert the new card into the 'cards' collection
     database.collection("cards").insertOne(newCard, (error, result) => {
         if (error) {
             response.status(500).send({ message: "Error adding card" });
         } else {
-            response.status(201).send({ message: "Card added successfully", card: result.ops[0] });
-            console.log("New card added:", result.ops[0]);
+            response.status(201).send({ message: "Card added successfully", card: result.insertedId });
+            console.log("New card added:", result.insertedId); // Logging the ID of the new card
         }
     });
 });
@@ -89,36 +90,3 @@ app.delete("/api/store_db/cards/:id", (request, response) => {
         }
     });
 });
-
-
-
-
-// var Express = require("express");
-// var {MongoClient} = require ("mongodb")
-// var cors = require("cors")
-// const multer = require("multer")
-
-// var app = Express();
-// app.use(cors())
-
-// var CONNECTION_STRING = "mongodb+srv://yostul93:AYft889NcuEK06Qm@cluster0.gn68m.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-
-// var DATABASENAME = "store_db"
-// var database; 
-
-// app.listen (5038, ()=>{
-//     MongoClient.connect(CONNECTION_STRING,(error,client)=>{
-//         database= client.db(DATABASENAME);
-//         console.log("DB connected successfully");
-        
-//     })
-// })
-
-// app.get (`/api/store_db/store`,(request,response)=>{
-//     database.collection("store_collection").find({}).toArray((error, result)=>{
-//     response.send(result)
-//     console.log(result);    
-//     })
-// })
-
